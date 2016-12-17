@@ -1,0 +1,33 @@
+{
+  "versionLabel": "1.0.0",
+  "agentInfo": {
+    "languageCode": "en-US",
+    "projectId": "primer-assistant",
+    "voiceName": "male_1"
+  },
+  "actions": [
+    {
+      "description": "Launch intent",
+      "initialTrigger": {
+        "intent": "assistant.intent.action.MAIN"
+      },
+      "httpExecution": {
+        "url": "https://63a438f4.ngrok.io"
+      }
+    },
+    {
+      "description": "Find the prime factors of a number",
+      "initialTrigger": {
+        "intent": "START_PRIMER",
+        "queryPatterns": [
+          {
+            "queryPattern": "Find prime factors"
+          }
+        ]
+      },
+      "httpExecution": {
+        "url": "https://63a438f4.ngrok.io"
+      }
+    }
+  ]
+}
