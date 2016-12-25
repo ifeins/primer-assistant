@@ -39,10 +39,18 @@ app.post('/', function (request, response) {
         } else {
             let state = assistant.getDialogState();
             let randomNumber = state.randomNumber;
-            let factors = assistant.getRawInput().split("and")
+            let factors;
+            if (assistant.getRawInput().includes("and")) {
+                factors = assistant.getRawInput().split("and");
+            } else if (assistant.getRawInput().includes("+")) {
+                factors = assistant.getRawInput().split("+");
+            } else {
+                factors = [ parseInt(assistant.getRawInput().trim()) ];
+            }
+
             let product = 1;
             for (let factor of factors) {
-                product = product * factor;
+                product = product * parseInt(factor.trim());
             }
             
             let inputPrompt;
