@@ -22,7 +22,7 @@ app.post('/', function (request, response) {
             '<break time="1"/>' +
             'In each turn I will pick a random number between 1 and 100 and you will have to find its prime factors, should be fun!' +
             '<break time="1"/>' +
-            'When you are ready say start.' +
+            'When you are ready say "start".' +
             '</speak>');
         assistant.ask(inputPrompt);
     }
@@ -32,23 +32,37 @@ app.post('/', function (request, response) {
         if (assistant.getRawInput() === 'bye') {
             assistant.tell('Goodbye!');
         } else if (assistant.getRawInput() === 'start') {
-            let randomNumber = Math.random() * 99 + 1;
+            let state = assistant.getDialogState();
+            state.randomNumber = Math.floor(Math.random() * 99 + 1);
+            let inputPrompt = assistant.buildInputPrompt(true, '<speak>Here is the number: ' + state.randomNumber + '\nFind its factors.</speak>');
+            assistant.ask(inputPrompt, state);
         } else {
-            let factor = parseInt(assistant.getRawInput());
-            let inputPrompt = assistant.buildInputPrompt(true,
-                '<speak>' +
-                'You said that the factor is <say-as interpret-as="cardinal">' + factor + '</say-as>' +
-                '</speak>'
-                );
-            assistant.ask(inputPrompt);
+            let state = assistant.getDialogState();
+            let randomNumber = state.randomNumber;
+            let factors = assistant.getRawInput().split("and")
+            let product = 1;
+            for (let factor of factors) {
+                product = product * factor;
+            }
+            
+            let inputPrompt;
+            if (product === randomNumber) {
+                state.randomNumber = Math.floor(Math.random() * 99 + 1);
+                inputPrompt = assistant.buildInputPrompt(true, '<speak>You got it right!\nHere is a new number: ' + state.randomNumber + '</speak');
+            } else {
+                inputPrompt = assistant.buildInputPrompt(true, '<speak>Nope, your math is wrong. Please try again</speak>');
+            }
+
+            assistant.ask(inputPrompt, state);
         }
 
-        let actionsMap = new Map();
-        actionsMap.set(assistant.StandardIntents.MAIN, mainIntent);
-        actionsMap.set(assistant.StandardIntents.TEXT, rawInput);
-
-        assistant.handleRequest(actionsMap);
     }
+
+    let actionsMap = new Map();
+    actionsMap.set(assistant.StandardIntents.MAIN, mainIntent);
+    actionsMap.set(assistant.StandardIntents.TEXT, rawInput);
+
+    assistant.handleRequest(actionsMap);
 });
 
 let server = app.listen(app.get('port'), function () {
