@@ -12,7 +12,7 @@
         "intent": "assistant.intent.action.MAIN"
       },
       "httpExecution": {
-        "url": "https://f0e779f8.ngrok.io"
+        "url": "https://primer-assistant.appspot.com"
       }
     },
     {
@@ -26,7 +26,7 @@
         ]
       },
       "httpExecution": {
-        "url": "https://f0e779f8.ngrok.io"
+        "url": "https://primer-assistant.appspot.com"
       }
     }
   ]
