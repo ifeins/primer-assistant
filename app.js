@@ -20,7 +20,9 @@ app.post('/', function (request, response) {
             '<speak>' +
             'Hi, welcome to Primer!' +
             '<break time="1"/>' +
-            'In each turn I will pick a random number between 1 and 100 and you will have to find its prime factors, should be fun!' +
+            'In each turn I will pick a random number between 1 and 100 and you will have to find its prime factors.' +
+            '<break time="1"/>' +
+            'Should be fun!' +
             '<break time="1"/>' +
             'When you are ready say "start".' +
             '</speak>');
@@ -45,7 +47,7 @@ app.post('/', function (request, response) {
             } else if (assistant.getRawInput().includes("+")) {
                 factors = assistant.getRawInput().split("+");
             } else {
-                factors = [ parseInt(assistant.getRawInput().trim()) ];
+                factors = [ assistant.getRawInput().trim() ];
             }
 
             let product = 1;
