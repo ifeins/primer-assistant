@@ -5,6 +5,7 @@ process.env.debug = 'actions-on-google:*';
 let ActionsSdkAssistant = require('actions-on-google').ActionsSdkAssistant;
 let express = require('express');
 let bodyParser = require('body-parser');
+let isPrime = require('is-prime');
 
 let app = express();
 app.set('port', (process.env.PORT || 8080));
@@ -51,21 +52,27 @@ app.post('/', function (request, response) {
             }
 
             let product = 1;
+            let allFactorsArePrime = true;
             for (let factor of factors) {
-                product = product * parseInt(factor.trim());
+                let factorNumber = parseInt(factor.trim());
+                allFactorsArePrime = allFactorsArePrime && isPrime(factorNumber);
+                product = product * factorNumber;
             }
             
             let inputPrompt;
             if (product === randomNumber) {
-                state.randomNumber = Math.floor(Math.random() * 99 + 1);
-                inputPrompt = assistant.buildInputPrompt(true, '<speak>You got it right!\nHere is a new number: ' + state.randomNumber + '</speak');
+                if (allFactorsArePrime) {
+                    state.randomNumber = Math.floor(Math.random() * 99 + 1);
+                    inputPrompt = assistant.buildInputPrompt(true, '<speak>You got it right!\nHere is a new number: ' + state.randomNumber + '</speak');    
+                } else {
+                    inputPrompt = assistant.buildInputPrompt(true, '<speak>Not all your factors are prime numbers, please try again.</speak>');
+                }
             } else {
                 inputPrompt = assistant.buildInputPrompt(true, '<speak>Nope, your math is wrong. Please try again</speak>');
             }
 
             assistant.ask(inputPrompt, state);
         }
-
     }
 
     let actionsMap = new Map();
